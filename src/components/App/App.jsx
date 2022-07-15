@@ -7,7 +7,7 @@ import ContactForm from 'components/Form/Form';
 import { ContactList } from 'components/Contacts/Contact';
 import { Filter } from 'components/FilterContact/Filter';
 
-export class App extends React.Component {
+export class App extends Component {
   state = {
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
