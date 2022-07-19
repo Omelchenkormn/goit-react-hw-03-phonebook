@@ -1,74 +1,65 @@
-import React, { Component } from 'react';
-import { nanoid } from 'nanoid/non-secure';
+import React from 'react';
+import { Formik, ErrorMessage } from 'formik';
+import * as yup from 'yup';
+
+// import { nanoid } from 'nanoid/non-secure';
 
 import { Button } from './Form.styled';
 import { Label } from './Form.styled';
 import { Input } from './Form.styled';
 import { Forms } from './Form.styled';
+import { Error } from './Form.styled';
+// import { Component } from './Form.styled';
 
-class ContactForm extends Component {
-  state = {
-    name: '',
-    number: '',
+const initialValues = {
+  name: '',
+  number: '',
+};
+const validSchema = yup.object().shape({
+  name: yup
+    .string()
+    .min(2)
+    .max(15)
+    .typeError('Должно быть строкой')
+    .required('Required'),
+  number: yup.string().min(6).max(12).required('Required'),
+});
+
+const ContactForm = ({ onSubmit }) => {
+  const handleSubmit = (initialValues, { resetForm }) => {
+    const { name, number } = initialValues;
+    onSubmit(name, number);
+    resetForm();
   };
-
-  nameId = nanoid();
-  numberId = nanoid();
-
-  handleNameChange = event => {
-    const { name, value } = event.currentTarget;
-    this.setState({ [name]: value });
-  };
-
-  handleSubmit = event => {
-    const { name, number } = this.state;
-    event.preventDefault();
-    this.props.onSubmit(name, number);
-    this.reset();
-  };
-
-  reset() {
-    this.setState({
-      name: '',
-      number: '',
-    });
-  }
-
-  render() {
-    return (
-      <Forms onSubmit={this.handleSubmit}>
-        <Label htmlFor={this.nameId}>
+  return (
+    <Formik
+      validationSchema={validSchema}
+      validateOnBlur={true}
+      // validateOnChange={true}
+      initialValues={initialValues}
+      onSubmit={handleSubmit}
+    >
+      <Forms autoComplete="off">
+        <Label htmlFor="name">
           Name
-          <Input
-            type="text"
-            name="name"
-            value={this.state.name}
-            pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-            title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-            required
-            onChange={this.handleNameChange}
-            id={this.nameId}
-          />
+          <Input type="text" name="name" />
+          <Error>
+            <ErrorMessage name="name" />{' '}
+          </Error>
         </Label>
-        <Label htmlFor={this.numberId}>
+        <Label htmlFor="number">
           Number
-          <Input
-            type="tel"
-            name="number"
-            value={this.state.number}
-            pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-            title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-            required
-            onChange={this.handleNameChange}
-            id={this.numberId}
-          />
+          <Input type="tel" name="number" />
+          <Error>
+            <ErrorMessage name="number" />
+          </Error>
         </Label>
-        <Button type="submit" onClick={this.addContact}>
-          Add contact
-        </Button>
+        <Button type="submit">Add contact</Button>
       </Forms>
-    );
-  }
-}
+    </Formik>
+  );
+};
 
 export default ContactForm;
+
+// htmlFor={this.nameId} for label

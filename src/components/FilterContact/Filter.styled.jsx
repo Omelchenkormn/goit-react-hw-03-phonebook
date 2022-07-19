@@ -7,4 +7,8 @@ export const Label = styled.label`
 
 export const Input = styled.input`
   margin-top: 10px;
+  border: 1px solid #c3dbff;
+  :focus-visible {
+    outline: 1px solid #2884fc;
+  }
 `;
